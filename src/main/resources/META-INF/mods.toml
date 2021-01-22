@@ -1,0 +1,6 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+[[mods]]
+modId="roflmod"
+version="${file.jarVersion}"
+displayName="Rofl Mod"
