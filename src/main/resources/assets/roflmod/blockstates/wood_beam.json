@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=y":     { "model": "roflmod:block/wood_beam" },
+    "axis=z":     { "model": "roflmod:block/wood_beam", "x": 90 },
+    "axis=x":     { "model": "roflmod:block/wood_beam", "x": 90, "y": 90 }
+  }
+}

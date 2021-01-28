@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "roflmod:blocks/wood_beam_top",
+    "side": "roflmod:blocks/wood_beam"
+  }
+}
