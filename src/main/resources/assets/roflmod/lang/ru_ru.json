@@ -1,4 +1,5 @@
 {
   "block.roflmod.wood_beam": "Брус",
-  "item.roflmod.bark": "Кора"
+  "item.roflmod.bark": "Кора",
+  "effect.roflmod.curse_effect": "Опустошение"
 }

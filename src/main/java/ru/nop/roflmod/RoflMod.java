@@ -1,9 +1,6 @@
 package ru.nop.roflmod;
 
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
@@ -14,6 +11,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -28,8 +27,6 @@ import ru.nop.roflmod.block.BlockInit;
 import ru.nop.roflmod.items.ItemInit;
 import ru.nop.roflmod.potion.EffectsInit;
 
-import java.util.Objects;
-
 
 @Mod(RoflMod.MOD_ID)
 @Mod.EventBusSubscriber(modid = RoflMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -38,8 +35,9 @@ public class RoflMod {
 
     public static final String MOD_ID = "roflmod";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final int max_curse_effect_amplifierIn = 10;
-    public static int curse_effect_amplifierIn = 1;
+    public static final float max_curse_effect_amplifierIn = 10;
+    public static int amplifierIn = 0;
+    public static boolean isUsedMilk;
 
     public RoflMod() {
         final IEventBus modeEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -90,23 +88,36 @@ public class RoflMod {
 
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
+        EffectInstance effectInstance = event.getEntityLiving().getActivePotionEffect(EffectsInit.CURSE);
+        if (effectInstance != null)
+            amplifierIn = effectInstance.getAmplifier();
+        else
+            amplifierIn = 0;
         RoflMod.LOGGER.debug("Player Death event");
     }
 
     @SubscribeEvent
     public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-        event.getPlayer().addPotionEffect(new EffectInstance(EffectsInit.CURSE, 3600, curse_effect_amplifierIn));
-        if (curse_effect_amplifierIn < max_curse_effect_amplifierIn)
-            curse_effect_amplifierIn++;
+        if (max_curse_effect_amplifierIn >= amplifierIn)
+            amplifierIn++;
+        RoflMod.LOGGER.debug(amplifierIn);
+        if (amplifierIn > 0)
+            event.getPlayer().addPotionEffect(new EffectInstance(EffectsInit.CURSE, 99999, amplifierIn));
 
         RoflMod.LOGGER.debug("Player Respawn event");
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onPlayerUse(PlayerInteractEvent event) {
+        isUsedMilk = event.getItemStack().getItem().equals(Items.MILK_BUCKET);
+        RoflMod.LOGGER.debug("PlayerInteractEvent event");
+    }
+
     @SubscribeEvent
     public void potionRemoveEvent(PotionEvent.PotionRemoveEvent event) {
-        if (Objects.requireNonNull(event.getPotionEffect()).getEffectName().equals(EffectsInit.CURSE.getName())) {
+        if (event.getPotion().equals(EffectsInit.CURSE) && isUsedMilk)
             event.setCanceled(true);
-        }
+
         RoflMod.LOGGER.debug("Player PotionRemoveEvent event");
     }
 

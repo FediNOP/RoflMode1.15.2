@@ -1,4 +1,5 @@
 {
   "block.roflmod.wood_beam": "Wood Beam",
-  "item.roflmod.bark": "Bark"
+  "item.roflmod.bark": "Bark",
+  "effect.roflmod.curse_effect": "Hollowing"
 }

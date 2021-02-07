@@ -1,12 +1,7 @@
 package ru.nop.roflmod.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.SwordItem;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -30,15 +25,17 @@ public class ItemInit {
             });
 
     public static final RegistryObject<Item> HUMAN_EFFIGY = ITEMS.register("human_effigy",
-            () -> new Item(new Item.Properties().group(RoflMod.RoflModItemGroup.instance)) {
-                @Override
-                public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-                    if (!worldIn.isRemote){
-                        playerIn.removePotionEffect(EffectsInit.CURSE);
-                    }
+            () -> new Item(new Item.Properties().group(RoflMod.RoflModItemGroup.instance)
+                    .food(new Food.Builder().fastToEat().setAlwaysEdible().build())) {
 
-                    return super.onItemRightClick(worldIn, playerIn, handIn);
+                @Override
+                public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+                    if (!worldIn.isRemote) {
+                        entityLiving.removePotionEffect(EffectsInit.CURSE);
+                    }
+                    return super.onItemUseFinish(stack, worldIn, entityLiving);
                 }
+
             });
 
 
